@@ -1,0 +1,43 @@
+<div class="page-body-wrapper full-page-wrapper auth-page">
+    <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+        <div class="row w-100">
+            <div class="col-lg-4 mx-auto">
+                <h2 class="text-center mb-4" style="color: white;">Ingresar</h2>
+                <div class="auto-form-wrapper">
+
+
+                    <form [formGroup]="loginForm" (ngSubmit)="loginUser()">
+                        <div class="row mb-3">
+                            <label for="inputUser" class="col-sm-2 col-form-label">Usuario</label>
+                            <div class="col-sm-10">
+                                <input type="text" 
+                                    formControlName="username"
+                                    class="form-control" id="inputUser">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Contraseña</label>
+                            <div class="col-sm-10">
+                                <input type="password" 
+                                    formControlName="password"
+                                    class="form-control" id="inputPassword3">
+                            </div>
+                        </div>                        
+                        <button 
+                            type="submit" [disabled]="loginForm.invalid"
+                            class="btn btn-primary">
+                            Entrar
+                            <span *ngIf="loading">
+                                <i class="fa fa-spin fa-sync"></i>
+                            </span>
+                        </button>
+                    </form>
+                    <div  *ngIf="loginError" class="alert alert-danger mt-2" role="alert">
+                        Las credenciales no son válida
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+</div>

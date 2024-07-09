@@ -1,0 +1,41 @@
+
+<div class="col-12 mt-4">
+    <div class="mb-4">
+    
+        <button type="button" class="btn btn-primary">Nuevo</button>
+    </div>
+    <div class="row">
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nombre</th>                    
+                    <th scope="col">Dirección</th>                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of stores" >
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>                    
+                    <td>{{ item.address }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li 
+                    *ngFor="let item of elementPage(); let i=index" 
+                    class="page-item"
+                    [ngClass]="{'active': pageSelected === item}"
+                    (click)="pageSelected = item"
+                    aria-current="page">
+                    <span class="page-link">{{ item + 1 }}</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
