@@ -30,7 +30,6 @@ export class LoginComponent {
 
         this.authService.login(username, password).subscribe({
             next: (resp) => {
-                console.log('🐭', resp);
                 this.router.navigate(['/']);
             },
             error: () => { this.loginError = true }

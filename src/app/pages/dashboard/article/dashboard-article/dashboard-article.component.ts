@@ -31,7 +31,6 @@ export class DashboardArticleComponent {
             next: resp => {
                 this.articles = resp.content;
                 this.totalPages = resp.totalPages;
-                console.log(resp)
             },
             error: () => {}
         })

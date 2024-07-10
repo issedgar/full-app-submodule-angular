@@ -19,6 +19,9 @@ export class AuthService {
     private cartSubj: BehaviorSubject<Article[]> = new BehaviorSubject<Article[]>([]);
     public cartObs$ = this.cartSubj.asObservable();
 
+    private KEY_DATA = 'data';
+    private KEY_STORED_SELECTED = 'selectedStoredId';
+
     constructor() { }
 
     set changeCart(articles: Article[]) {
@@ -30,11 +33,19 @@ export class AuthService {
     }
 
     set setData(data: AuthLogin) {
-        localStorage.setItem('data', JSON.stringify(data));
+        localStorage.setItem(this.KEY_DATA, JSON.stringify(data));
     }
 
     get getData(): AuthLogin | undefined {
-        return localStorage.getItem('data') !== null ? JSON.parse(localStorage.getItem('data') as string) as AuthLogin : undefined;
+        return localStorage.getItem(this.KEY_DATA) !== null ? JSON.parse(localStorage.getItem(this.KEY_DATA) as string) as AuthLogin : undefined;
+    }
+
+    set setStored(storedId: number) {
+        localStorage.setItem(this.KEY_STORED_SELECTED, String(storedId));
+    }
+
+    get getStored(): number | undefined {
+        return localStorage.getItem(this.KEY_STORED_SELECTED) !== null ? Number(localStorage.getItem(this.KEY_STORED_SELECTED)) : undefined;
     }
 
     login(username: string, password: string) {        
@@ -58,7 +69,8 @@ export class AuthService {
     }
     
     logout() {
-        localStorage.removeItem('data');
+        localStorage.removeItem(this.KEY_DATA);
+        localStorage.removeItem(this.KEY_STORED_SELECTED);
         this.router.navigate(['/login']);
     }
 

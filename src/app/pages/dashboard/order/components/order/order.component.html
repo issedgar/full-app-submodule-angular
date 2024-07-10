@@ -12,19 +12,63 @@
     </div>
 </div>
 <div class="row pt-4 pb-4">
-    <div class="col-12 d-flex justify-content-center">
+    <div class="col-12 d-flex justify-content-center mb-4">
+        <div class="col-4">
+            <div class="form-check form-check-inline">
+                <input 
+                    [(ngModel)]="userSelected"
+                    (change)="onCheckboxChange()"
+                    value="0"
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault" id="flexRadioDefault1" checked>
+                <label class="form-check-label" for="flexRadioDefault1">
+                    Usuario Autentificado
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input
+                    [(ngModel)]="userSelected"
+                    (change)="onCheckboxChange()"
+                    value="1"
+                    class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Seleccionar Usuario
+                </label>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="userSelected === '0' && clientLocal" class="col-12 d-flex justify-content-center">
+        <div class="col-4">
+            <hr class="border border-primary border-3 opacity-75">
+            <div class="d-flex flex-column">            
+                <div class="d-inline-flex">
+                    <p class="fw-bold me-1">Nombre: </p>
+                    <p class="fw-normal">{{ clientLocal.clientId }} - {{ clientLocal.fullName }}</p>
+                </div>
+                <div class="d-inline-flex">
+                    <p class="fw-bold me-1">Usuario: </p>
+                    <p class="fw-normal">{{ clientLocal.username }}</p>
+                </div>
+
+            </div>
+            <hr class="border border-primary border-3 opacity-75">
+        </div>
+    </div>
+    <div *ngIf="userSelected === '1'" class="col-12 d-flex justify-content-center">
         <div class="col-4">
             <div class="form-group mb-3" >
-                <label class="form-control-label" for="inputStore">Seleccionar una Cliente</label>
+                <label class="form-control-label" for="inputStore">Seleccionar un Cliente</label>
                 <div class="input-group">
                     <select
                         #selectNgModel="ngModel"
+                        (change)="onChange()"
                         class="form-control form-select"                     
                         aria-label="Cliente"
                         [(ngModel)]="clientId"
                         >
                         <option value="0">Seleccionar</option>
-                        <option *ngFor="let client of clients$ | async" [value]="client.id">{{ client.name }} {{ client.lastName }}</option>
+                        <option *ngFor="let client of clients$ | async" [value]="client.id">{{ client.id }} - {{ client.name }} {{ client.lastName }}</option>
                     </select>
                 </div>
             </div>
@@ -81,7 +125,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngIf="articles.length <= 0">
+                <tr *ngIf="!articles || articles.length <= 0">
                     <td class="text-center" colspan="7">
                         Sin registros para mostrar
                     </td>

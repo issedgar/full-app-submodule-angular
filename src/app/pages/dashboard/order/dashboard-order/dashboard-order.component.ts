@@ -34,6 +34,7 @@ export class DashboardOrderComponent implements AfterViewInit, OnDestroy {
     public articlesInCart: Article[] = []
     public orders: Order[] = [];
     public articles: Article[] = [];
+    public storedIdSelected = 0;
 
     constructor() {
         this.subsCart$ = this.authService.cartObs$.subscribe({
@@ -46,13 +47,28 @@ export class DashboardOrderComponent implements AfterViewInit, OnDestroy {
     ngAfterViewInit(): void {
         this.subsStore$ = this.selectNgModel.valueChanges!.subscribe({
             next: async store => {
-                this.articlesInCart = [];
-                this.authService.changeCart = this.articlesInCart;
-                this.storeId = store;
+                if(this.storeId !== store) {
+                    this.articlesInCart = [];
+                    this.authService.changeCart = this.articlesInCart;
+                    this.storeId = store;
+                    this.authService.setStored = store;
+                } else {
+                    this.articlesInCart = this.authService.getCart;
+                }
                 if(store > 0) {
                     this.orders = await lastValueFrom(this.orderService.getAllByStore(this.storeId));
                     this.articles = await lastValueFrom(this.articleService.getByStore(this.storeId));
 
+                    if(this.articlesInCart.length > 0) {
+                        for await (const art of this.articlesInCart) {
+                            if(art.addItems && art.addItems > 0) {
+                                const articleDB = this.articles.find(a => a.id === art.id);
+                                if(articleDB) {
+                                    articleDB.stock = articleDB.stock - art.addItems;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         })
@@ -69,6 +85,11 @@ export class DashboardOrderComponent implements AfterViewInit, OnDestroy {
 
     initData() {
         this.stores$ = this.storeService.getAll();
+
+        const storedLocal =  this.authService.getStored;
+        if(storedLocal) {
+            this.storeId = storedLocal;
+        }
     }
 
     getArticles() {

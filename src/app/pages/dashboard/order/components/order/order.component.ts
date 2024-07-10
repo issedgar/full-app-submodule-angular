@@ -1,8 +1,11 @@
 import { AfterViewInit, Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgModel } from '@angular/forms';
+import { AjaxError } from 'rxjs/ajax';
 
-import { count, Observable, Subscription } from 'rxjs';
+import Swal from 'sweetalert2';
+
+import { Observable, Subscription } from 'rxjs';
 
 import { AuthService } from '../../../../../shared/services/auth.service';
 import { ClientService } from '../../../../../shared/services/client.service';
@@ -10,9 +13,8 @@ import { OrderService } from '../../../../../shared/services/order.service';
 
 import { Article } from '../../../../../shared/interfaces/article.interface';
 import { Client } from '../../../../../shared/interfaces/client.interface';
+import { AuthLogin } from '../../../../../shared/interfaces/auth.interface';
 import { OrderCreate, OrderDetailCreate } from '../../../../../shared/interfaces/order.interface';
-import Swal from 'sweetalert2';
-import { AjaxError } from 'rxjs/ajax';
 
 @Component({
     selector: 'app-order',
@@ -20,7 +22,7 @@ import { AjaxError } from 'rxjs/ajax';
     styleUrls: ['./order.component.scss']
 })
 export class OrderComponent implements AfterViewInit, OnDestroy {
-    @ViewChild('selectNgModel') public selectNgModel!: NgModel;
+    @ViewChild('selectNgModel', { static: false }) public selectNgModel!: NgModel;
 
     public authService = inject(AuthService);
     public clientService = inject(ClientService);
@@ -38,6 +40,9 @@ export class OrderComponent implements AfterViewInit, OnDestroy {
     public clientId: number = 0;
     public orderNum: string = '';
 
+    public userSelected: string = '0';
+    public clientLocal: AuthLogin | undefined;
+
     constructor() {        
         this.initData();
     }
@@ -52,24 +57,15 @@ export class OrderComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.subsClient$ = this.selectNgModel.valueChanges!.subscribe({
-            next: async client => {                
-                if(client > 0) {
-                    this.clientId = client;
-
-                    this.subsCart$ = this.authService.cartObs$.subscribe({
-                        next: carts => {
-                            this.articles = carts;
-                        }
-                    })
-                    this.articles = this.authService.getCart;
-                }
+        this.subsCart$ = this.authService.cartObs$.subscribe({
+            next: carts => {
+                this.articles = carts;
             }
         })
     }
 
     initData() {
-        this.clients$ = this.clientService.getAll();
+        this.onCheckboxChange();
     }
 
     async generateOrder() {
@@ -98,6 +94,7 @@ export class OrderComponent implements AfterViewInit, OnDestroy {
         this.orderService.create(orderCreate).subscribe({
             next: async _ => {
                 await Swal.fire({ title: "Guardar", text: "El registro ha sido guardado", icon: "info" });
+                this.authService.changeCart = [];
                 this.router.navigate(['order']);
             },
             error: async (error: AjaxError) => {
@@ -108,6 +105,33 @@ export class OrderComponent implements AfterViewInit, OnDestroy {
             }
         })
 
+    }
+
+    onCheckboxChange() {
+        if(this.subsClient$) {
+            this.subsClient$.unsubscribe();
+        }
+        if(this.userSelected === '0') {
+            this.clientLocal = this.authService.getData;
+            if(this.clientLocal) {
+                this.clientId = this.clientLocal.clientId;
+            }
+        } else {
+            this.clients$ = this.clientService.getAll();            
+        }
+        this.articles = this.authService.getCart;
+    }
+
+    onChange() {
+        if(this.selectNgModel && !this.subsClient$) {
+            this.subsClient$ = this.selectNgModel.valueChanges!.subscribe({
+                next: async client => {                
+                    if(client > 0) {
+                        this.clientId = client;
+                    }
+                }
+            });
+        }
     }
 
 }
