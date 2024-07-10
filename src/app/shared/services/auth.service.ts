@@ -69,9 +69,13 @@ export class AuthService {
     }
     
     logout() {
+        this.exitPage();        
+        this.router.navigate(['/login']);
+    }
+
+    exitPage() {
         localStorage.removeItem(this.KEY_DATA);
         localStorage.removeItem(this.KEY_STORED_SELECTED);
-        this.router.navigate(['/login']);
     }
 
 

@@ -30,6 +30,7 @@ export class DashboardComponent implements OnDestroy {
         if(this.subsCart$) {
             this.subsCart$.unsubscribe();
         }
+        this.authService.exitPage();
     }
 
     logout() {
