@@ -51,13 +51,11 @@ export class ArticleComponent {
         this.initData();
     }
 
-    async initData() {
-        this.loading = true;
+    async initData() {        
         this.stores$ = this.storeService.getAll();
-
         if(this.id) {
+            this.loading = true;
             this.article = await lastValueFrom(this.articleService.get(this.id));
-            console.log(this.article);
             this.loadDataForm(this.article);
             this.loading = false;
         }

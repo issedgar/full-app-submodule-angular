@@ -29,7 +29,6 @@ export class DashboardStoreComponent {
             next: resp => {
                 this.stores = resp.content;
                 this.totalPages = resp.totalPages;
-                console.log(resp)
             },
             error: () => {}
         })
