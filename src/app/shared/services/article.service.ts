@@ -48,6 +48,29 @@ export class ArticleService {
         );
     }
 
+    getByStore(storeId: number) {
+        return ajax<Article[]>({
+            url: `${this.api}/by-store/${ storeId }`,
+            method: 'GET',
+            responseType: 'json',
+            headers: this.getHeader()
+        }).pipe(
+            take(1),
+            map((data: AjaxResponse<Article[]>) => {
+                return data.response;
+            }),
+            catchError(err => throwError(() => console.log(err)))
+        );
+    }
+
+    save(id: number | undefined, article: ArticleCreate | ArticleUpdate) {
+        if(!id) {
+            return this.create(article as ArticleCreate);
+        } else {
+            return this.update(id, article as ArticleUpdate);
+        }
+    }
+
     create(articleCreate: ArticleCreate) {
         return ajax<Article>({
             url: `${this.api}`,
@@ -59,8 +82,7 @@ export class ArticleService {
             take(1),
             map((data: AjaxResponse<Article>) => {
                 return data.response;
-            }),
-            catchError(err => throwError(() => console.log(err)))
+            })
         );
     }
 
@@ -75,8 +97,17 @@ export class ArticleService {
             take(1),
             map((data: AjaxResponse<Article>) => {
                 return data.response;
-            }),
-            catchError(err => throwError(() => console.log(err)))
+            })
+        );
+    }
+
+    delete(articleId: number) {
+        return ajax<void>({
+            url: `${ this.api }/${ articleId }`,
+            method: 'DELETE',
+            headers: this.getHeader()
+        }).pipe(
+            take(1)
         );
     }
 

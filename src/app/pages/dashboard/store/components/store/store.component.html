@@ -1,0 +1,103 @@
+
+<form autocomplete="off" [formGroup]="form" (ngSubmit)="save()">
+
+    <div class=" header bg-transparent pb-6">
+        <div class=" container-fluid">
+            <div class=" header-body">
+                <div class=" row align-items-center py-4">                
+                    <div class=" col-6">
+                        <h6 class=" h2 d-inline-block mb-0">
+                            {{ id ? 'Editar' : 'Crear' }} {{ title && title.toLocaleLowerCase() }}
+                        </h6>
+                    </div>
+                    <div class=" col-6 text-end">
+                        <button
+                            type="button"
+                            class=" btn btn-danger btn-sm mb-2 ms-sm-0 ms-md-3 me-3"
+                            tooltip="Cancelar"
+                            placement="top"
+                            [routerLink]="['/store']"
+                            >
+                            <span class=" btn-inner--text"> Cancelar </span>
+                        </button>
+                        <button
+                            type="submit"
+                            class=" btn btn-success btn-sm mb-2 ml-sm-0 ml-md-3"
+                            tooltip="Plan"
+                            placement="top"
+                            [disabled]="form.invalid"
+                            >
+                            <span class=" btn-inner--text"> {{ id ? 'Actualizar' : 'Guardar' }} </span>
+                            <i *ngIf="loading === true"  class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class=" container-fluid mt--6">
+
+        <div class="text-center" *ngIf="loading" >
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        
+        <div class=" row">
+            <div class=" col-lg-12">
+                <div class=" card-wrapper">
+                    <div class=" card">
+                        <div class="card-header ngx-datatable-text-button">
+                            {{ title | titlecase }}
+                        </div>
+                        <div class=" card-body">
+
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group mb-3" >
+                                        <label class="form-control-label" for="inputName">Nombre de tienda</label>
+                                        <div class="input-group">
+                                            <input 
+                                                id="inputName"
+                                                type="text" 
+                                                class="form-control" 
+                                                placeholder="Nombre" 
+                                                aria-label="Nombre"
+                                                formControlName="name"
+                                                [ngClass]="{ 'is-invalid': inputIsValid('name') }"
+                                                >
+                                            <div class="invalid-feedback">
+                                                El nombre es requerido
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <div class="form-group mb-3" >
+                                        <label class="form-control-label" for="inputName">Dirección</label>
+                                        <div class="input-group">
+                                            <input 
+                                                id="inputAddress"
+                                                type="text" 
+                                                class="form-control" 
+                                                placeholder="Dirección" 
+                                                aria-label="Dirección"
+                                                formControlName="address"
+                                                [ngClass]="{ 'is-invalid': inputIsValid('address') }"
+                                                >
+                                            <div class="invalid-feedback">
+                                                La dirección es requerida
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

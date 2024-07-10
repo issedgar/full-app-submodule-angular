@@ -18,6 +18,7 @@ export interface ArticleUpdate {
 
 export interface Article extends ArticleCreate {
     id: number;
+    addItems?: number;
 }
 
 

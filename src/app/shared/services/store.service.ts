@@ -33,6 +33,21 @@ export class StoreService {
         );
     }
 
+    getAll() {
+        return ajax<Store[]>({
+            url: `${this.api}/all`,
+            method: 'GET',
+            responseType: 'json',
+            headers: this.getHeader(),
+        }).pipe(
+            take(1),
+            map((data: AjaxResponse<Store[]>) => {
+                return data.response;
+            }),
+            catchError(err => throwError(() => console.log(err)))
+        );
+    }
+
     getByPage(page: number = 0, size: number = 10) {
         return ajax<Page<Store>>({
             url: `${this.api}/paginated?page=${page}&size=${size}`,
@@ -48,6 +63,14 @@ export class StoreService {
         );
     }
 
+    save(id: number | undefined, store: StoreCreate | StoreUpdate) {
+        if(!id) {
+            return this.create(store as StoreCreate);
+        } else {
+            return this.update(id, store as StoreUpdate);
+        }
+    }
+
     create(storeCreate: StoreCreate) {
         return ajax<Store>({
             url: `${this.api}`,
@@ -59,8 +82,7 @@ export class StoreService {
             take(1),
             map((data: AjaxResponse<Store>) => {
                 return data.response;
-            }),
-            catchError(err => throwError(() => console.log(err)))
+            })
         );
     }
 
@@ -75,8 +97,17 @@ export class StoreService {
             take(1),
             map((data: AjaxResponse<Store>) => {
                 return data.response;
-            }),
-            catchError(err => throwError(() => console.log(err)))
+            })
+        );
+    }
+
+    delete(storeId: number) {
+        return ajax<void>({
+            url: `${ this.api }/${ storeId }`,
+            method: 'DELETE',
+            headers: this.getHeader()
+        }).pipe(
+            take(1)
         );
     }
 

@@ -1,0 +1,184 @@
+
+<form autocomplete="off" [formGroup]="form" (ngSubmit)="save()">
+
+    <div class=" header bg-transparent pb-6">
+        <div class=" container-fluid">
+            <div class=" header-body">
+                <div class=" row align-items-center py-4">                
+                    <div class=" col-6">
+                        <h6 class="h2 d-inline-block mb-0">
+                            {{ id ? 'Editar' : 'Crear' }} {{ title && title.toLocaleLowerCase() }}
+                        </h6>
+                    </div>
+                    <div class=" col-6 text-end">
+                        <button
+                            type="button"
+                            class=" btn btn-danger btn-sm mb-2 ms-sm-0 ms-md-3 me-3"
+                            tooltip="Cancelar"
+                            placement="top"
+                            [routerLink]="['/article']"
+                            >
+                            <span class=" btn-inner--text"> Cancelar </span>
+                        </button>
+                        <button
+                            type="submit"
+                            class=" btn btn-success btn-sm mb-2 ml-sm-0 ml-md-3"
+                            tooltip="Plan"
+                            placement="top"
+                            [disabled]="form.invalid"
+                            >
+                            <span class=" btn-inner--text"> {{ id ? 'Actualizar' : 'Guardar' }} </span>
+                            <i *ngIf="loading === true"  class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class=" container-fluid mt--6">
+        <div class="text-center" *ngIf="loading" >
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div class=" row">
+            <div class=" col-lg-12">
+                <div class=" card-wrapper">
+                    <div class=" card">
+                        <div class="card-header">
+                            {{ title | titlecase }}
+                        </div>
+                        <div class=" card-body">
+
+                            <div class="row mb-3">
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group mb-3" >
+                                        <label class="form-control-label" for="inputName">Código</label>
+                                        <div class="input-group">
+                                            <input 
+                                                id="inputName"
+                                                type="text" 
+                                                class="form-control" 
+                                                placeholder="Código" 
+                                                aria-label="Código"
+                                                formControlName="code"
+                                                [ngClass]="{ 'is-invalid': inputIsValid('code') }"
+                                                >
+                                            <div class="invalid-feedback">
+                                                El código es requerido
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group mb-3" >
+                                        <label class="form-control-label" for="inputDescription">Descripción</label>
+                                        <div class="input-group">
+                                            <input 
+                                                id="inputDescription"
+                                                type="text" 
+                                                class="form-control" 
+                                                placeholder="Descripción" 
+                                                aria-label="Descripción"
+                                                formControlName="description"
+                                                [ngClass]="{ 'is-invalid': inputIsValid('description') }"
+                                                >
+                                            <div class="invalid-feedback">
+                                                La descripción es requerida
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div>
+                                        <img 
+                                            *ngIf="existImage()"
+                                            [src]="form.get('image')?.value" class="img-thumbnail" alt="...">
+
+                                    </div>
+                                    <div class="form-group mb-3" >
+                                        <label class="form-control-label" for="inputImage">URL Imagen</label>
+                                        <div class="input-group">
+                                            <input 
+                                                id="inputImage"
+                                                type="url"
+                                                class="form-control" 
+                                                placeholder="URL Imagen" 
+                                                aria-label="URL Imagen"
+                                                formControlName="image"
+                                                [ngClass]="{ 'is-invalid': inputIsValid('image') }"
+                                                >
+                                            <div class="invalid-feedback">
+                                                La URL de la imagen es requerida
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group mb-3" >
+                                        <label class="form-control-label" for="inputPrice">Precio</label>
+                                        <div class="input-group">
+                                            <input 
+                                                id="inputPrice"
+                                                type="number"
+                                                class="form-control" 
+                                                placeholder="Precio" 
+                                                aria-label="Precio"
+                                                formControlName="price"
+                                                [ngClass]="{ 'is-invalid': inputIsValid('price') }"
+                                                >
+                                            <div class="invalid-feedback">
+                                                El precio es requerido
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group mb-3" >
+                                        <label class="form-control-label" for="inputStock">Número Existencias</label>
+                                        <div class="input-group">
+                                            <input 
+                                                id="inputStock"
+                                                type="number"
+                                                class="form-control" 
+                                                placeholder="Número de existencias" 
+                                                aria-label="Número de existencias"
+                                                formControlName="stock"
+                                                [ngClass]="{ 'is-invalid': inputIsValid('stock') }"
+                                                >
+                                            <div class="invalid-feedback">
+                                                El número de existencias es requerido
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                    <div class="form-group mb-3" >
+                                        <label class="form-control-label" for="inputStore">Tienda</label>
+                                        <div class="input-group">
+                                            <select 
+                                                class="form-control form-select" 
+                                                aria-label="Seleccionar"
+                                                formControlName="storeId"
+                                                >
+                                                <option value="">Seleccionar</option>
+                                                <option *ngFor="let store of stores$ | async" [value]="store.id">{{ store.name }}</option>
+                                            </select>
+                                            <div class="invalid-feedback" *ngIf="inputIsValid('storeId')" >
+                                                La tienda es requerida
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

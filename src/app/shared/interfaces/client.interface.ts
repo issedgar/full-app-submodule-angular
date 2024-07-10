@@ -1,6 +1,7 @@
 export interface ClientCreate {
     name:     string;
     lastName: string;
+    address: string;
     username: string;
     password: string;
 }
@@ -8,6 +9,7 @@ export interface ClientCreate {
 export interface ClientUpdate {
     name?:     string;
     lastName?: string;
+    address?: string;
     username?: string;
     password?: string;
 }

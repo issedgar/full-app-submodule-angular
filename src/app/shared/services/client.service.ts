@@ -32,6 +32,21 @@ export class ClientService {
         );
     }
 
+    getAll() {
+        return ajax<Client[]>({
+            url: `${ this.api }/all`,
+            method: 'GET',
+            responseType: 'json',
+            headers: this.getHeader()
+        }).pipe(
+            take(1),
+            map( (data: AjaxResponse<Client[]>) => {
+                return data.response;
+            }),
+            catchError(err => throwError(() => console.log(err)))
+        );
+    }
+
     getByPage(page: number = 0, size: number = 10) {
         return ajax<Page<Client>>({
             url: `${ this.api }/paginated?page=${ page }&size=${ size }`,
@@ -47,6 +62,14 @@ export class ClientService {
         );
     }
 
+    save(id: number | undefined, client: ClientCreate | ClientUpdate) {
+        if(!id) {
+            return this.create(client as ClientCreate);
+        } else {
+            return this.update(id, client as ClientUpdate);
+        }
+    }
+
     create(clientCreate: ClientCreate) {
         return ajax<Client>({
             url: `${ this.api }`,
@@ -58,8 +81,7 @@ export class ClientService {
             take(1),
             map( (data: AjaxResponse<Client>) => {
                 return data.response;
-            }),
-            catchError(err => throwError(() => console.log(err)))
+            })
         );
     }
 
@@ -74,8 +96,17 @@ export class ClientService {
             take(1),
             map( (data: AjaxResponse<Client>) => {
                 return data.response;
-            }),
-            catchError(err => throwError(() => console.log(err)))
+            })
+        );
+    }
+
+    delete(clientId: number) {
+        return ajax<void>({
+            url: `${ this.api }/${ clientId }`,
+            method: 'DELETE',
+            headers: this.getHeader()
+        }).pipe(
+            take(1)
         );
     }
 

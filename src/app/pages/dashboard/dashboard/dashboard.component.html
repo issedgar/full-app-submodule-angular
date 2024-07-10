@@ -6,7 +6,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link" 
                     [routerLink]="['/client']" routerLinkActive="router-link-active" 
@@ -25,7 +25,25 @@
                     <a class="nav-link" 
                         [routerLink]="['/order']" routerLinkActive="router-link-active">Ordenes</a>
                 </li>
-            </ul>
+            </ul>            
+            <div class="d-flex nav-item me-5">
+                <button 
+                    type="button" 
+                    (click)="addOrder()"
+                    class="btn btn-outline-light position-relative">
+                    <i class="fa fa-cart-plus"></i>
+                    <span 
+                        *ngIf="numberAdds > 0"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ numberAdds }}
+                      <span class="visually-hidden">artículos agregados</span>
+                    </span>
+                </button>
+            </div>
+            
+            <form class="d-flex" role="">
+                <button class="btn btn-light" (click)="logout()" type="submit">Salir</button>
+            </form>
         </div>
     </div>
 </nav>
